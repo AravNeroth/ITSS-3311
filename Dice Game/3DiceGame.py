@@ -34,7 +34,7 @@ Your score is the sum of the dice plus any bonus points.
 """)
 
 # Prompt for any key to be entered to start the game
-input("Press any key or 'Enter' to roll the dice...")
+input("Press 'Enter' to roll the dice...")
 
 # Start of loop
 while(keep_playing):
