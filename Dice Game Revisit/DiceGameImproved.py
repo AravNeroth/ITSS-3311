@@ -87,14 +87,14 @@ def get_result(bonus):
         return "No Bonus"
     
 # print the game stats
-def print_game_stat(result, bonus, score):
+def print_game_stat(result, bonus, score, die1, die2, die3):
     print(f"""
-            Today's Date: {date}
-            Dice values: {die1}, {die2}, {die3}
-            Result: {result}
-            Bonus: {bonus}
-            Score: {score}
-            """)
+        Today's Date: {date}
+        Dice values: {die1}, {die2}, {die3}
+        Result: {result}
+        Bonus: {bonus}
+        Score: {score}
+        """)
 
 # prompts play again loop once "games" has finished. 
 def ask_play_again():
@@ -122,7 +122,7 @@ def main():
             score = die1 + die2 + die3 + bonus
             result = get_result(bonus)
             # print game results using updated variables as parameters
-            print_game_stat(result, bonus, score)
+            print_game_stat(result, bonus, score, die1, die2, die3)
 
         # if user responded no, break and end game
         if not ask_play_again(): 
