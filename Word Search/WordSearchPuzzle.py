@@ -13,6 +13,7 @@ import os
 def read_words(file_name):
     base_dir = os.path.join(os.getcwd(), "Word Search")
     file_path = os.path.join(base_dir, file_name)
+    
     try:
         with open(file_path, "r") as f:
             return [x.strip().upper() for x in f.readlines()]
@@ -101,14 +102,14 @@ def interact_and_locate_words(grid, words):
         print("Your input should look like this: 1,3 1,4 1,5")
         user_input = input("Enter the coordinates: ")
 
-        # input handling for incorrect formatting
-        try:
-            coordinates = [tuple(map(int, coord.split(','))) for coord in user_input.split()]
-        except ValueError:
-            print("Invalid input format. Please enter row,col pairs.")
+        # using re for incorrect user formatting (googled the expression i needed)
+        if not re.match(r'^(\d+,\d+)( \d+,\d+)*$', user_input):
+            print("Invalid input format. Please enter row,col pairs separated by spaces.")
             continue
-
+        
+        coordinates = [tuple(map(int, coord.split(','))) for coord in user_input.split()]
         actual_coordinates = find_word(grid, word)
+
         if coordinates == actual_coordinates:
             found_words.append(word)
             print(f"Found {word} at {coordinates}")
@@ -121,8 +122,8 @@ def interact_and_locate_words(grid, words):
 
 def main():
     print("Welcome to the Word Search Puzzle Game!")
-    file_name = input("Enter the input file name containing the words: ")
-    
+    file_name = input("Enter the input file name containing the words (your_file.txt): ")
+
     words = read_words(file_name)
     if not words:
         return
