@@ -7,8 +7,10 @@ import random
 import re
 import os
 
+
+# used google eamples to use OS package to find how to specify where I wanted the program to search for the files
+# I have my python files organized through GitHub, so this is how I got it to accuratly write and read files on my machine
 def read_words(file_name):
-    """Reads words from a file in the 'Word Search' folder and returns a list."""
     base_dir = os.path.join(os.getcwd(), "Word Search")
     file_path = os.path.join(base_dir, file_name)
     try:
@@ -19,7 +21,7 @@ def read_words(file_name):
         return []
 
 def write_results(file_name, results):
-    """Writes the game results to a file in the 'Word Search' folder."""
+    # used OS import to specify where I wanted the file to be created
     base_dir = os.path.join(os.getcwd(), "Word Search")
     file_path = os.path.join(base_dir, file_name)
     try:
@@ -29,6 +31,7 @@ def write_results(file_name, results):
     except Exception as e:
         print(f"Error writing to file: {e}")
 
+# sample code that iterates throughout the word list to place them randomly horizonatally or vertically
 def generate_grid(words, size=10):
     """Generates a word search grid with given words randomly placed."""
     grid = [[' ' for _ in range(size)] for _ in range(size)]
@@ -51,7 +54,8 @@ def generate_grid(words, size=10):
                     for i in range(len(word)):
                         grid[row + i][col] = word[i]
                     placed = True
-    
+
+    # after placing the words, fill in the blanks with random letters of the alphabet
     for i in range(size):
         for j in range(size):
             if grid[i][j] == ' ':
@@ -59,31 +63,45 @@ def generate_grid(words, size=10):
     
     return grid
 
+# decided to print it differently from the sample code by adding a space inbetween each letter and moving to the next line
 def print_grid(grid):
-    """Prints the word search grid."""
     for row in grid:
         print(" ".join(row))
     print("\n")
 
+# sample code that works by checking if entered coordinates matches the word cord by using regex
 def find_word(grid, word):
-    """Finds the word in the grid and returns its coordinates."""
+
     size = len(grid)
+
+    # look horizontally for matches
     for row in range(size):
-        for col in range(size):
-            if grid[row][col] == word[0]:
-                if col + len(word) <= size and all(grid[row][col + i] == word[i] for i in range(len(word))):
-                    return [(row, col + i) for i in range(len(word))]
-                if row + len(word) <= size and all(grid[row + i][col] == word[i] for i in range(len(word))):
-                    return [(row + i, col) for i in range(len(word))]
+        # didn't know how to seach entire rows/col with re so i googled how to do it
+        row_str = "".join(grid[row])
+        match = re.search(word, row_str)
+        if match:
+            return [(row, match.start() + i) for i in range(len(word))]
+        
+    # look vertically for matches    
+    for col in range(size):
+        col_str = "".join(grid[row][col] for row in range(size))
+        match = re.search(word, col_str)
+        if match:
+            return [(match.start() + i, col) for i in range(len(word))]
+                
+    # no horizontal or verticle matches, it returns empty
     return []
 
+
+# takes user coords, finds the actual coords of word, then checks if they match. if they do, add to found_words 
 def interact_and_locate_words(grid, words):
-    """Allows the user to find words in the grid by inputting coordinates."""
     found_words = []
     for word in words:
         print(f"Find the word: {word}")
-        print("Your input should look like this: 4,3 4,4 4,5 4,6")
+        print("Your input should look like this: 1,3 1,4 1,5")
         user_input = input("Enter the coordinates: ")
+
+        # input handling for incorrect formatting
         try:
             coordinates = [tuple(map(int, coord.split(','))) for coord in user_input.split()]
         except ValueError:
@@ -98,11 +116,13 @@ def interact_and_locate_words(grid, words):
                 grid[row][col] = grid[row][col].lower()
         else:
             print(f"{word} not found. Actual coordinates: {actual_coordinates}")
+
     return found_words
 
 def main():
     print("Welcome to the Word Search Puzzle Game!")
     file_name = input("Enter the input file name containing the words: ")
+    
     words = read_words(file_name)
     if not words:
         return
@@ -113,9 +133,11 @@ def main():
     
     found_words = interact_and_locate_words(grid, words)
     
+    # I used ChatGPT for output file bc I wanted my results file was nicely formatted, and I knew it was possible but i didn't know how to do it optimally 
+    # dictionary 'results', line 1 is all the words found by user, line 2 is how many words found out of total words, line 3 is the found percentage
     results = f"Words found: {', '.join(found_words)}\nTotal: {len(found_words)}/{len(words)}\nPercentage: {(len(found_words) / len(words)) * 100:.2f}%"
-    print("\nGame Over!", results)
     
+    print("\nGame Finished!", results)
     output_file = "game_results.txt"
     write_results(output_file, results)
     print(f"Results have been written to {output_file}")
