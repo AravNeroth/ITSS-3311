@@ -1,7 +1,7 @@
 # ITSS / OPRE 3311 – Introduction to Programming
 # Project: Word Search
 # Student Name: Arav Neroth
-# Date Completed: 3/27/2025
+# Date Completed: 3/31/2025
 
 import random
 import re
@@ -134,7 +134,7 @@ def main():
     
     found_words = interact_and_locate_words(grid, words)
     
-    # I used ChatGPT for output file bc I wanted my results file was nicely formatted, and I knew it was possible but i didn't know how to do it optimally 
+    # I used google for output file bc I wanted my results file was nicely formatted, and I knew it was possible but i didn't know how to do it optimally 
     # dictionary 'results', line 1 is all the words found by user, line 2 is how many words found out of total words, line 3 is the found percentage
     results = f"Words found: {', '.join(found_words)}\nTotal: {len(found_words)}/{len(words)}\nPercentage: {(len(found_words) / len(words)) * 100:.2f}%"
     
