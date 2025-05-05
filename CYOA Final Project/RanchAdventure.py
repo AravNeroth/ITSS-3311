@@ -5,35 +5,32 @@
 
 import sys
 
-# Track which endings have been achieved
+# ending tracker
 done_endings = set()
 
 
+# gets name
 def get_name():
-    """Prompts the user to enter their name and returns it."""
     return input("Enter your name: ")
 
-
+# welcome message
 def print_welcome(name):
-    """Prints a welcome message including the player's name and game rules."""
+
     print(f"\nWelcome, {name}, to the Re-Invention of Ranch!")
     print("How To Play: Enter the number of your choice to make decisions.")
     print("Your choices determine the path and ending you achieve.\n")
 
-
+# starts game- "1" to Look or "2" to Recreate.
 def start_game():
-    """
-    Presents the initial scenario where ranch has disappeared.
-    Returns "1" to Look or "2" to Recreate.
-    """
+
     print("It’s gone! One sorrowful morning, every trace of ranch has vanished from the world.")
     print("1. Look for any remaining ranch.")
     print("2. Try to recreate ranch.")
     return input_choice("Enter 1 or 2: ", ["1", "2"])
 
-
+# returns the story text corresponding to the given path
 def get_story(path):
-    """Returns the story text corresponding to the given path."""
+
     stories = {
         "choose_team": "\nDo you work alone or with other people?",
         "solo_ingredient": "\nYou gather ingredients you think you need to make up ranch. You need the final few elements.",
@@ -48,9 +45,9 @@ def get_story(path):
     }
     return stories[path]
 
-
+# list of (key, description) tuples for the given path
 def get_choices(path):
-    """Returns a list of (key, description) tuples for the given path."""
+
     choices = {
         "choose_team": [("1", "Work with a team of specialists."), ("2", "Go solo.")],
         "solo_ingredient": [("1", "Butter"), ("2", "Sour Cream")],
@@ -61,12 +58,9 @@ def get_choices(path):
     }
     return choices[path]
 
-
+# prints story + choices, then checks for valid user input
 def make_choice(path):
-    """
-    Prints the story and its choices for the given path,
-    then prompts until the user enters a valid option.
-    """
+
     print(get_story(path))
     options = get_choices(path)
     for key, desc in options:
@@ -75,29 +69,26 @@ def make_choice(path):
     prompt = f"Enter {' or '.join(valid)}: "
     return input_choice(prompt, valid)
 
-
+# keeps track of endings achieved. displays special message if all are found
 def record_ending(label):
-    """Add an ending to the set and display progress. If all found, show special message."""
     done_endings.add(label)
     print(f"Endings achieved ({len(done_endings)}/{5}): {', '.join(sorted(done_endings))}")
     if len(done_endings) == 5:
         print("*** Astounding! You've discovered all possible endings! Thanks for exploring every path! ***\n")
         print("*** You've earned the title of RANCH REVOLUTIONARY ***")
 
-
+# prompts for play again with error handinling
 def play_again():
-    """Asks the player if they want to play again. Returns 'Y' or 'N'."""
     return input_choice("\nPlay again? (Y/N): ", ["Y", "N", "y", "n"]).upper()
 
-
+# ending message display
 def print_end_message(name, ending):
-    """Prints the ending message for the player."""
     print(f"\nCongratulations, {name}! {ending}")
     print("Thank you for playing!\n")
 
-
+# catches invalid input 
 def input_choice(prompt, valid_choices):
-    """Helper to prompt until a valid choice is entered."""
+
     choice = input(prompt).strip()
     while choice not in valid_choices:
         choice = input("Invalid choice. " + prompt).strip()
@@ -109,7 +100,7 @@ def main():
     print_welcome(name)
 
     while True:
-        # Must choose to recreate after any number of Looks
+        #  choose to recreate after any number of "look option"
         while True:
             choice = start_game()
             if choice == "1":
@@ -117,7 +108,7 @@ def main():
             else:
                 break
 
-        # Team vs. Solo branch
+        # team vs. solo branch
         choice = make_choice("choose_team")
         if choice == "1":
             ending_label = "Betrayal Ending"
@@ -128,19 +119,19 @@ def main():
             record_ending(ending_label)
 
         else:
-            # Solo Path
-            # Ingredient 1
+            # solo Path ingredient 1
             while True:
                 if make_choice("solo_ingredient") == "2":
                     break
                 print("\nBad combination... It ruined the whole mixture! Try again.")
 
-            # Secondary ingredient
+            # ingredient 2
             while True:
                 sec = make_choice("solo_secondary")
                 if sec == "2":
                     print("\nBad combination... It ruined the whole mixture! Try again.")
-                    # re-pick the first ingredient
+                    
+                    # re-pick the ingredient 1
                     while True:
                         if make_choice("solo_ingredient") == "2":
                             break
@@ -148,7 +139,7 @@ def main():
                 else:
                     break
 
-            # Balance stage
+            # balance stage
             bal = make_choice("balance_stage")
             if bal == "1":
                 ending_label = "Recreation Ending"
@@ -159,7 +150,7 @@ def main():
                 print_end_message(name, ending_text)
                 record_ending(ending_label)
             else:
-                # Experimental branch
+                # experimental branch
                 exp = make_choice("dangerous_work")
                 if exp == "1":
                     ending_label = "Poisoned Ending"
@@ -170,9 +161,10 @@ def main():
                     print_end_message(name, ending_text)
                     record_ending(ending_label)
                 else:
-                    # Super Ranch ending
+                    # Super Ranch endings
                     sup = make_choice("super_choice")
                     if sup == "1":
+                         # selfless ending 
                         ending_label = "Super Ending"
                         ending_text = (
                             "Super Ranch for everyone! You are hailed as The Ranch Savior! "
@@ -181,12 +173,14 @@ def main():
                             "You make billions and there are dog parks and shrines named in your honor.\nEnding (5/5)"
                         )
                     else:
+                        # selfish ending
                         ending_label = "Selfish Ending"
                         ending_text = (
                             "You keep Super Ranch all to yourself and live in ranch bliss! The world "
                             "slowly recovers from the loss of ranch. \nYou however, are living your "
                             "best Ranch life! \nSelfish Ending (4/5)"
                         )
+                    # wrap up path
                     print_end_message(name, ending_text)
                     record_ending(ending_label)
 
